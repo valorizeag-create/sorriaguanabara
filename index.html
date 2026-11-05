@@ -13,6 +13,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta name="theme-color" content="#223A8E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap" rel="stylesheet">
 <script>document.documentElement.classList.add('js')</script>
@@ -40,8 +41,24 @@ p{margin:0;text-wrap:pretty}
 
 /* ===== Motion ===== */
 /* Elementos com .reveal sobem e aparecem ao entrar na tela. --i dá o atraso em cascata. */
-.js .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s var(--suave),transform .8s var(--suave);transition-delay:calc(var(--i,0) * 90ms)}
-.js .reveal.visivel{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(32px);filter:blur(6px);transition:opacity .9s var(--suave),transform .9s var(--suave),filter .9s var(--suave);transition-delay:calc(var(--i,0) * 110ms)}
+.js .reveal[data-anim=esq]{transform:translateX(-48px)}
+.js .reveal[data-anim=dir]{transform:translateX(48px)}
+.js .reveal[data-anim=zoom]{transform:scale(.9) translateY(24px)}
+.js .reveal.visivel{opacity:1;transform:none;filter:none}
+@keyframes palavra{from{opacity:0;transform:translateY(.55em) rotate(3deg);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes rolar{to{transform:translateX(-50%)}}
+@keyframes brilho{0%,70%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(220%) skewX(-20deg)}}
+@keyframes balancar{0%,86%,100%{transform:rotate(0)}88%{transform:rotate(-16deg)}91%{transform:rotate(13deg)}94%{transform:rotate(-8deg)}97%{transform:rotate(4deg)}}
+@keyframes girar{to{transform:rotate(360deg)}}
+
+/* Barra de progresso da leitura */
+.progresso{position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--vermelho),var(--azul));transform-origin:left;transform:scaleX(var(--p,0))}
+
+/* Palavras do título entram uma a uma */
+.js .hero h1{animation:none}
+.palavra{display:inline-block;animation:palavra .9s var(--suave) both;animation-delay:calc(.15s + var(--w,0) * 70ms)}
 @keyframes subir{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes desenhar{to{stroke-dashoffset:0}}
 @keyframes flutuar{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-24px) scale(1.06)}}
@@ -49,9 +66,14 @@ p{margin:0;text-wrap:pretty}
 @keyframes abrir{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 
 /* Botões */
-.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;text-decoration:none;font-size:16px;font-weight:600;line-height:1.2;transition:background .2s,color .2s,transform .25s var(--suave),box-shadow .25s var(--suave)}
-.btn:hover{transform:translateY(-2px)}
-.btn:active{transform:translateY(0) scale(.98)}
+.btn{--bx:0px;--by:0px;position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;text-decoration:none;font-size:16px;font-weight:600;line-height:1.2;transform:translate(var(--bx),var(--by));transition:background .2s,color .2s,transform .35s var(--suave),box-shadow .25s var(--suave)}
+.btn:hover{transform:translate(var(--bx),calc(var(--by) - 3px))}
+.btn:active{transform:translate(var(--bx),var(--by)) scale(.97)}
+.btn.magnetico{transition:background .2s,color .2s,transform .12s linear,box-shadow .25s var(--suave)}
+/* Reflexo que passa pelos botões principais de tempos em tempos */
+.btn-grande::after,.btn-vermelho::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;z-index:-1;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-120%) skewX(-20deg);animation:brilho 4.5s 2s ease-in-out infinite;pointer-events:none}
+.btn svg{transition:transform .35s var(--suave)}
+.btn:hover svg{transform:rotate(-12deg) scale(1.12)}
 .btn-azul{background:var(--azul);color:#fff;box-shadow:0 10px 24px -14px rgba(34,58,142,.7)}
 .btn-azul:hover{background:var(--azul-escuro);color:#fff;box-shadow:0 16px 30px -14px rgba(34,58,142,.8)}
 .btn-vermelho{background:var(--vermelho);color:#fff;box-shadow:0 10px 24px -14px rgba(215,51,58,.8)}
@@ -94,7 +116,7 @@ header.rolou{box-shadow:0 8px 24px -18px rgba(19,27,59,.45)}
 .hero h1{font-size:clamp(40px,6.6vw,84px);line-height:1.04;letter-spacing:-0.03em;max-width:15ch}
 .sublinha{position:relative;display:inline-block;white-space:nowrap}
 .sublinha svg{position:absolute;left:-2%;bottom:-.14em;width:104%;height:.36em;overflow:visible}
-.sublinha path{fill:none;stroke:var(--vermelho);stroke-width:7;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:desenhar 1.1s .7s var(--suave) forwards}
+.sublinha path{fill:none;stroke:var(--vermelho);stroke-width:7;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:desenhar 1.1s 1.1s var(--suave) forwards}
 .hero .lead{max-width:620px}
 .hero-cta{display:flex;flex-direction:column;gap:12px;align-items:center}
 .hero-cta small{font-size:14px;color:var(--texto-3)}
@@ -104,6 +126,20 @@ header.rolou{box-shadow:0 8px 24px -18px rgba(19,27,59,.45)}
 .confianca ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:20px;overflow:hidden;box-shadow:0 20px 40px -32px rgba(19,27,59,.35)}
 .confianca li{background:#fff;padding:22px 24px;display:flex;gap:14px;align-items:center;font-size:16px;font-weight:600;line-height:1.4}
 .check{flex:none;width:34px;height:34px;border-radius:50%;background:#E7ECF8;color:var(--azul);display:flex;align-items:center;justify-content:center}
+.js .confianca ul .check{transform:scale(0)}
+.js .confianca ul.visivel .check{animation:pop .6s var(--suave) both;animation-delay:.5s}
+.js .confianca ul.visivel li:nth-child(2) .check{animation-delay:.65s}
+.js .confianca ul.visivel li:nth-child(3) .check{animation-delay:.8s}
+.confianca li{transition:background .3s}
+.confianca li:hover{background:#F7F9FD}
+
+/* Faixa rolante com os tratamentos */
+.faixa-rolante{background:var(--vermelho);color:#fff;overflow:hidden;padding:18px 0;border-block:1px solid rgba(0,0,0,.06)}
+.faixa-rolante .trilho{display:flex;width:max-content;animation:rolar 38s linear infinite}
+.faixa-rolante:hover .trilho{animation-play-state:paused}
+.faixa-rolante ul{display:flex;align-items:center;gap:28px;margin:0;padding:0 28px 0 0;list-style:none;font-family:var(--titulo);font-weight:800;font-size:clamp(20px,2.4vw,28px);white-space:nowrap}
+.faixa-rolante li{display:flex;align-items:center;gap:28px}
+.faixa-rolante li::after{content:"";width:12px;height:12px;border-radius:50%;background:#fff;opacity:.55}
 
 /* Seções */
 .secao{padding-top:104px;padding-bottom:104px}
@@ -133,6 +169,13 @@ header.rolou{box-shadow:0 8px 24px -18px rgba(19,27,59,.45)}
 .grade-trat{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px;list-style:none;margin:0;padding:0}
 .grade-trat li{border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:26px 24px;display:flex;flex-direction:column;gap:12px;background:rgba(255,253,249,0.04);transition:background .3s,border-color .3s,opacity .8s var(--suave),transform .8s var(--suave)}
 .grade-trat li:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.34)}
+/* Luz que segue o mouse dentro do cartão de tratamento */
+.grade-trat li{position:relative;overflow:hidden}
+.grade-trat li::before{content:"";position:absolute;inset:0;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(255,138,142,.22),transparent 60%);opacity:0;transition:opacity .35s;pointer-events:none}
+.grade-trat li:hover::before{opacity:1}
+.grade-trat li > *{position:relative}
+.grade-trat .n{display:inline-block;transition:transform .35s var(--suave)}
+.grade-trat li:hover .n{transform:translateX(6px)}
 .grade-trat .n{font-size:13px;font-weight:700;letter-spacing:0.1em;color:#FF8A8E}
 .grade-trat b{font-family:var(--titulo);font-weight:800;font-size:25px;line-height:1.15}
 .grade-trat p{font-size:16px;line-height:1.55;color:#CCD5EF}
@@ -143,6 +186,11 @@ header.rolou{box-shadow:0 8px 24px -18px rgba(19,27,59,.45)}
 @media (min-width:1000px){.grade-casos>.caso:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 14px)}}
 .caso{margin:0;display:flex;flex-direction:column;gap:14px}
 .caso figcaption{font-size:15px;color:var(--texto-2);padding-left:4px}
+.caso .ba{transition:transform .4s var(--suave),box-shadow .4s var(--suave)}
+.caso:hover .ba{transform:translateY(-4px);box-shadow:0 26px 44px -30px rgba(19,27,59,.55)}
+.ba-pegador::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,255,255,.7);animation:pulso-branco 2.4s ease-out infinite}
+@keyframes pulso-branco{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.ba.arrastando .ba-pegador::before,.ba.mexido .ba-pegador::before{animation:none;opacity:0}
 .ba{--pos:50%;position:relative;aspect-ratio:4/3;border-radius:20px;overflow:hidden;cursor:ew-resize;touch-action:pan-y;user-select:none;-webkit-user-select:none;background:var(--placeholder)}
 .ba-lado{position:absolute;inset:0;z-index:0}
 .ba-lado::after{content:attr(data-label);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--texto-3)}
@@ -168,7 +216,10 @@ header.rolou{box-shadow:0 8px 24px -18px rgba(19,27,59,.45)}
 .passos li::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--azul);transform-origin:left;transition:transform 1s var(--suave);transition-delay:calc(var(--i,0) * 150ms + 200ms)}
 .js .passos li::before{transform:scaleX(0)}
 .js .passos li.visivel::before{transform:scaleX(1)}
-.passos .n{font-family:var(--titulo);font-weight:800;font-size:56px;line-height:1;color:var(--azul)}
+.passos .n{font-family:var(--titulo);font-weight:800;font-size:56px;line-height:1;color:var(--azul);display:inline-block;align-self:flex-start;transform-origin:left bottom}
+.js .passos li .n{transform:scale(0)}
+.js .passos li.visivel .n{animation:pop .7s var(--suave) both;animation-delay:calc(var(--i,0) * 150ms + 350ms)}
+.passos li:hover .n{color:var(--vermelho);transition:color .3s}
 .passos b{font-size:21px;font-weight:700}
 .passos p{font-size:17px;line-height:1.6;color:var(--texto-2)}
 
@@ -191,7 +242,6 @@ header.rolou{box-shadow:0 8px 24px -18px rgba(19,27,59,.45)}
 .mais{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--linha-2);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--azul);transition:transform .3s var(--suave),background .2s,color .2s}
 .faq details[open] .mais{transform:rotate(45deg);background:var(--azul);color:#fff;border-color:var(--azul)}
 .faq details p{padding:0 48px 24px 0;font-size:17px;line-height:1.65;color:var(--texto-2)}
-.faq details[open] p{animation:abrir .35s var(--suave)}
 
 /* CTA final */
 .cta-final{padding:0 24px 24px}
@@ -215,6 +265,34 @@ footer .dir{text-align:right}
 .wa-flutuante{position:fixed;right:22px;bottom:22px;z-index:30;display:flex;align-items:center;gap:10px;height:60px;padding:0 20px 0 18px;border-radius:999px;background:#25D366;color:#0B3B1F;text-decoration:none;font-weight:700;font-size:15px;box-shadow:0 12px 28px -10px rgba(0,0,0,0.35);transition:background .2s,transform .25s var(--suave);animation:subir .7s 1s var(--suave) both}
 .wa-flutuante::before{content:"";position:absolute;inset:0;border-radius:inherit;animation:pulso 2.6s 2s ease-out infinite;pointer-events:none}
 .wa-flutuante:hover{background:#2EE170;color:#0B3B1F;transform:translateY(-2px)}
+.wa-flutuante svg{animation:balancar 5s 3s ease-in-out infinite}
+/* Logo gira levemente ao passar o mouse */
+.marca .logo img{transition:transform .6s var(--suave)}
+.marca:hover .logo img{transform:scale(1.13) rotate(-10deg)}
+/* Dúvidas: a resposta abre deslizando (o JS anima a altura) */
+.faq details p{overflow:hidden}
+.faq summary{transition:color .2s,padding-left .3s var(--suave)}
+.faq summary:hover{padding-left:6px}
+
+/* Localização com mapa 3D */
+.local{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:stretch}
+.local-txt{display:flex;flex-direction:column;gap:22px;justify-content:center}
+.endereco{display:flex;gap:14px;align-items:flex-start;padding:20px 22px;background:#fff;border:1px solid var(--linha);border-radius:20px;font-size:17px;line-height:1.55;color:var(--texto-2)}
+.endereco b{display:block;color:var(--texto);font-size:18px}
+.pino{flex:none;width:42px;height:42px;border-radius:50%;background:var(--vermelho);color:#fff;display:flex;align-items:center;justify-content:center}
+.local-botoes{display:flex;flex-wrap:wrap;gap:12px}
+.mapa-caixa{position:relative;min-height:460px;border-radius:28px;overflow:hidden;background:#DCE3F0;border:1px solid var(--linha);box-shadow:0 30px 60px -40px rgba(19,27,59,.55)}
+.mapa-caixa iframe,#mapa3d{position:absolute;inset:0;width:100%;height:100%;border:0}
+.mapa-selo{position:absolute;left:16px;top:16px;z-index:2;padding:7px 12px;border-radius:999px;background:rgba(19,27,59,.78);color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none}
+.marcador{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer;text-decoration:none}
+.marcador .logo{display:block;width:58px;height:58px;border:3px solid #fff;box-shadow:0 10px 24px -6px rgba(19,27,59,.6)}
+.marcador .onda{position:relative;display:block}
+.marcador .onda::before{content:"";position:absolute;inset:0;border-radius:50%;background:rgba(215,51,58,.45);animation:onda 2.2s ease-out infinite}
+@keyframes onda{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+.marcador .rotulo{margin-bottom:8px;padding:6px 12px;border-radius:999px;background:#fff;color:var(--texto);font-family:var(--titulo);font-weight:800;font-size:14px;white-space:nowrap;box-shadow:0 8px 18px -8px rgba(19,27,59,.5)}
+.marcador i{width:3px;height:16px;background:#fff;border-radius:0 0 3px 3px;box-shadow:0 4px 8px rgba(19,27,59,.4)}
+.marcador:hover .logo img{transform:scale(1.13) rotate(-10deg)}
+@media (max-width:860px){.local{grid-template-columns:1fr}.mapa-caixa{min-height:380px}}
 
 @media (max-width:820px){
   .faq{grid-template-columns:1fr;gap:24px}
@@ -236,10 +314,12 @@ footer .dir{text-align:right}
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   *,*::before,*::after{animation:none !important;transition:none !important}
-  .js .reveal{opacity:1;transform:none}
+  .js .reveal,.js .reveal[data-anim]{opacity:1;transform:none;filter:none}
   .js .passos li::before{transform:none}
+  .js .passos li .n,.js .confianca ul .check{transform:none}
   .sublinha path{stroke-dashoffset:0}
   .cta-box .foto img{transform:none}
+  .progresso,.faixa-rolante{display:none}
   header{position:static}
   .wa-flutuante{display:none}
   .cartao,.caso,.grade-trat li,.passos li,.depo,details{break-inside:avoid}
@@ -247,9 +327,12 @@ footer .dir{text-align:right}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none !important;transition:none !important}
-  .js .reveal{opacity:1;transform:none}
+  .js .reveal,.js .reveal[data-anim]{opacity:1;transform:none;filter:none}
   .js .passos li::before{transform:none}
+  .js .passos li .n,.js .confianca ul .check{transform:none}
   .sublinha path{stroke-dashoffset:0}
+  .faixa-rolante .trilho{flex-wrap:wrap;width:auto}
+  .faixa-rolante .trilho ul+ul{display:none}
 }
 </style>
 </head>
@@ -259,6 +342,7 @@ footer .dir{text-align:right}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.6-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.4-.9 2.2.1.9.4 1.8 1 2.6 1.1 1.6 2.5 2.9 4.2 3.7 1.5.6 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pino" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></symbol>
   <symbol id="i-setas" viewBox="0 0 24 24"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
@@ -270,6 +354,7 @@ footer .dir{text-align:right}
     </a>
     <a class="btn btn-azul" data-wa href="#">Agendar minha avaliação</a>
   </div>
+  <span class="progresso" aria-hidden="true"></span>
 </header>
 
 <main id="topo">
@@ -301,12 +386,12 @@ footer .dir{text-align:right}
 <!-- 2. Quem cuida de você -->
 <section class="faixa-branca">
   <div class="wrap equipe">
-    <div class="equipe-cabeca reveal">
+    <div class="equipe-cabeca reveal" data-anim="esq">
       <span class="eyebrow">Quem cuida de você</span>
       <h2>Prazer, nós somos a <em>Sorria Guanabara.</em></h2>
       <p class="destaque">Montamos a clínica com uma ideia simples: ninguém deveria ter medo ou vergonha de cuidar dos dentes.</p>
     </div>
-    <div class="equipe-txt reveal" style="--i:2">
+    <div class="equipe-txt reveal" data-anim="dir" style="--i:2">
       <div class="equipe-corpo">
         <p>Aqui, antes de qualquer procedimento, a dentista senta com você, mostra o que está acontecendo e explica as opções com calma. Você entende o porquê de cada etapa e decide junto com a gente.</p>
         <p>Nossa equipe investe em atualização constante, porque tratamento bem planejado é tratamento que dura. E fazemos questão de que cada paciente se sinta em casa, da primeira consulta à última revisão.</p>
@@ -329,6 +414,11 @@ footer .dir{text-align:right}
     <div class="cartao reveal" style="--i:2"><b>Sem pressa.</b><p>Seu tempo é respeitado, na cadeira e na decisão.</p></div>
   </div>
 </section>
+
+<!-- Faixa rolante (decorativa: o conteúdo está repetido na seção abaixo) -->
+<div class="faixa-rolante" aria-hidden="true">
+  <div class="trilho"><ul><li>Clínica geral</li><li>Clareamento dental</li><li>Lentes e facetas</li><li>Ortodontia</li><li>Implantes e próteses</li><li>Odontopediatria</li><li>Tratamento de canal</li></ul><ul><li>Clínica geral</li><li>Clareamento dental</li><li>Lentes e facetas</li><li>Ortodontia</li><li>Implantes e próteses</li><li>Odontopediatria</li><li>Tratamento de canal</li></ul></div>
+</div>
 
 <!-- 4. Tratamentos -->
 <section class="tratamentos">
@@ -362,7 +452,7 @@ footer .dir{text-align:right}
   </div>
   <span class="dica reveal"><svg width="18" height="18"><use href="#i-setas"/></svg>Arraste a linha para comparar o antes e o depois</span>
   <div class="grade-casos">
-    <figure class="caso reveal" style="--i:0">
+    <figure class="caso reveal" data-anim="zoom" style="--i:0">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-1-antes.jpg" alt="Caso 1, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-1-depois.jpg" alt="Caso 1, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -371,7 +461,7 @@ footer .dir{text-align:right}
       </div>
       <figcaption>Facetas · [tempo de tratamento]</figcaption>
     </figure>
-    <figure class="caso reveal" style="--i:1">
+    <figure class="caso reveal" data-anim="zoom" style="--i:1">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-2-antes.jpg" alt="Caso 2, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-2-depois.jpg" alt="Caso 2, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -380,7 +470,7 @@ footer .dir{text-align:right}
       </div>
       <figcaption>9 facetas em resina e troca da coroa sobre implante</figcaption>
     </figure>
-    <figure class="caso reveal" style="--i:0">
+    <figure class="caso reveal" data-anim="zoom" style="--i:0">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-3-antes.jpg" alt="Caso 3, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-3-depois.jpg" alt="Caso 3, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -389,7 +479,7 @@ footer .dir{text-align:right}
       </div>
       <figcaption>[Tratamento realizado] · [tempo de tratamento]</figcaption>
     </figure>
-    <figure class="caso reveal" style="--i:1">
+    <figure class="caso reveal" data-anim="zoom" style="--i:1">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-4-antes.jpg" alt="Caso 4, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-4-depois.jpg" alt="Caso 4, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -398,7 +488,7 @@ footer .dir{text-align:right}
       </div>
       <figcaption>[Tratamento realizado] · [tempo de tratamento]</figcaption>
     </figure>
-    <figure class="caso reveal" style="--i:0">
+    <figure class="caso reveal" data-anim="zoom" style="--i:0">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-5-antes.jpg" alt="Caso 5, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-5-depois.jpg" alt="Caso 5, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -407,7 +497,7 @@ footer .dir{text-align:right}
       </div>
       <figcaption>[Tratamento realizado] · [tempo de tratamento]</figcaption>
     </figure>
-    <figure class="caso reveal" style="--i:1">
+    <figure class="caso reveal" data-anim="zoom" style="--i:1">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-6-antes.jpg" alt="Caso 6, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-6-depois.jpg" alt="Caso 6, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -416,7 +506,7 @@ footer .dir{text-align:right}
       </div>
       <figcaption>[Tratamento realizado] · [tempo de tratamento]</figcaption>
     </figure>
-    <figure class="caso reveal" style="--i:0">
+    <figure class="caso reveal" data-anim="zoom" style="--i:0">
       <div class="ba">
         <div class="ba-lado ba-antes" data-label="Foto do antes"><img src="assets/antes-depois/caso-7-antes.jpg" alt="Caso 7, antes do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Antes</span></div>
         <div class="ba-lado ba-depois" data-label="Foto do depois"><img src="assets/antes-depois/caso-7-depois.jpg" alt="Caso 7, depois do tratamento" loading="lazy" draggable="false" onerror="this.remove()"><span class="ba-tag">Depois</span></div>
@@ -462,21 +552,43 @@ footer .dir{text-align:right}
 
 <!-- 8. Perguntas frequentes -->
 <section class="wrap faq">
-  <h2 class="reveal">Ficou alguma dúvida?</h2>
+  <h2 class="reveal" data-anim="esq">Ficou alguma dúvida?</h2>
   <div class="faq-lista reveal" style="--i:1">
     <details><summary>Quanto custa o tratamento?<span class="mais" aria-hidden="true">+</span></summary><p>Cada sorriso é diferente, então o valor depende do que você precisa. Na avaliação, você recebe o plano completo com as condições de pagamento antes de começar qualquer procedimento.</p></details>
     <details><summary>Vocês parcelam?<span class="mais" aria-hidden="true">+</span></summary><p>[Sim, oferecemos condições facilitadas de pagamento. Os detalhes são apresentados junto com o seu plano de tratamento.]</p></details>
     <details><summary>Atendem convênio?<span class="mais" aria-hidden="true">+</span></summary><p>[Resposta a confirmar com a clínica.]</p></details>
     <details><summary>Tenho muito medo de dentista. E agora?<span class="mais" aria-hidden="true">+</span></summary><p>Você não é o único, e está tudo bem. Vamos no seu ritmo, explicando cada passo antes de fazer. Pode nos contar sobre o seu medo logo na primeira conversa.</p></details>
     <details><summary>Atendem crianças?<span class="mais" aria-hidden="true">+</span></summary><p>Sim. Atendemos crianças, adultos e idosos, então a família toda pode se cuidar no mesmo lugar.</p></details>
-    <details><summary>Onde fica a clínica e qual o horário?<span class="mais" aria-hidden="true">+</span></summary><p>[Endereço completo], Jardim Guanabara, Goiânia. Atendimento de [dias] das [horário] às [horário].</p></details>
+    <details><summary>Onde fica a clínica e qual o horário?<span class="mais" aria-hidden="true">+</span></summary><p>Avenida Goiânia, [número], Jardim Guanabara II, Goiânia. <a href="https://maps.app.goo.gl/bdhJuEMEWFKmsDwJ7" target="_blank" rel="noopener">Ver no mapa</a>. Atendimento de [dias] das [horário] às [horário].</p></details>
     <details><summary>Como agendo?<span class="mais" aria-hidden="true">+</span></summary><p>É só clicar em qualquer botão desta página. Você cai direto no nosso WhatsApp e a equipe te ajuda a escolher o melhor horário.</p></details>
   </div>
 </section>
 
-<!-- 9. CTA final com a fachada -->
+<!-- 9. Localização (mapa 3D; se o navegador não suportar, mostra o mapa do Google) -->
+<section class="faixa-branca">
+  <div class="wrap secao local">
+    <div class="local-txt reveal" data-anim="esq">
+      <span class="eyebrow">Onde estamos</span>
+      <h2>Pertinho de você, no Jardim Guanabara.</h2>
+      <div class="endereco">
+        <span class="pino"><svg width="20" height="20"><use href="#i-pino"/></svg></span>
+        <div><b>Sorria Guanabara Odontologia</b>Avenida Goiânia, [número]<br>Jardim Guanabara II, Goiânia - GO<br>CEP 74675-430</div>
+      </div>
+      <div class="local-botoes">
+        <a class="btn btn-azul" href="https://www.google.com/maps/dir/?api=1&amp;destination=-16.6165685,-49.2115551" target="_blank" rel="noopener"><svg width="18" height="18"><use href="#i-pino"/></svg>Como chegar</a>
+        <a class="btn btn-contorno" href="https://maps.app.goo.gl/bdhJuEMEWFKmsDwJ7" target="_blank" rel="noopener">Abrir no Google Maps</a>
+      </div>
+    </div>
+    <div class="mapa-caixa reveal" data-anim="zoom" style="--i:1">
+      <span class="mapa-selo">Mapa 3D · arraste para girar</span>
+      <div id="mapa3d" aria-label="Mapa com a localização da Sorria Guanabara"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. CTA final com a fachada -->
 <section class="cta-final">
-  <div class="cta-box reveal">
+  <div class="cta-box reveal" data-anim="zoom">
     <div class="cta-txt">
       <h2>Seu sorriso merece esse cuidado. <em>E você também.</em></h2>
       <p>Agende sua avaliação e saia da consulta sabendo exatamente o que fazer pelo seu sorriso.</p>
@@ -494,7 +606,7 @@ footer .dir{text-align:right}
   <div>
     <span class="logo logo-rodape"><img src="assets/logo.jpg" alt="Logo Sorria Guanabara Odontologia" width="72" height="72" loading="lazy"></span>
     <b>Sorria Guanabara · Odontologia</b>
-    <span>[Endereço completo] · Jardim Guanabara, Goiânia - GO</span>
+    <span><a href="https://maps.app.goo.gl/bdhJuEMEWFKmsDwJ7" target="_blank" rel="noopener">Avenida Goiânia, [número] · Jardim Guanabara II, Goiânia - GO</a></span>
     <span>[Telefone] · [@instagram]</span>
   </div>
   <div class="dir">
@@ -557,6 +669,188 @@ var semMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   f();
 })();
 
+/* Título do topo: separa as palavras para entrarem uma a uma */
+(function () {
+  var h1 = document.querySelector('.hero h1');
+  if (!h1 || semMovimento) return;
+  var n = 0;
+  Array.prototype.slice.call(h1.childNodes).forEach(function (no) {
+    if (no.nodeType === 3) {
+      var frag = document.createDocumentFragment();
+      no.textContent.split(/(\s+)/).forEach(function (p) {
+        if (!p) return;
+        if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+        var s = document.createElement('span');
+        s.className = 'palavra'; s.style.setProperty('--w', n++); s.textContent = p;
+        frag.appendChild(s);
+      });
+      h1.replaceChild(frag, no);
+    } else if (no.nodeType === 1) {
+      no.classList.add('palavra'); no.style.setProperty('--w', n++);
+    }
+  });
+})();
+
+/* Barra de progresso da leitura + parallax leve */
+(function () {
+  var barra = document.querySelector('.progresso');
+  var fotoCta = document.querySelector('.cta-box .foto img');
+  var pendente = false;
+  function atualizar() {
+    pendente = false;
+    var max = document.documentElement.scrollHeight - innerHeight;
+    if (barra) barra.style.setProperty('--p', max > 0 ? (scrollY / max).toFixed(4) : 0);
+    if (!semMovimento && fotoCta) {
+      var r = fotoCta.parentNode.getBoundingClientRect();
+      var k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+      fotoCta.style.translate = '0 ' + (k * -40).toFixed(1) + 'px';
+    }
+  }
+  addEventListener('scroll', function () { if (!pendente) { pendente = true; requestAnimationFrame(atualizar); } }, { passive: true });
+  addEventListener('resize', atualizar);
+  atualizar();
+})();
+
+/* Efeitos de mouse (só em computador) */
+(function () {
+  if (semMovimento || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  /* Bolhas do topo acompanham o mouse */
+  var area = document.querySelector('.hero-area');
+  var bolhas = document.querySelectorAll('.bolha');
+  if (area) area.addEventListener('pointermove', function (e) {
+    var r = area.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    bolhas.forEach(function (b, i) {
+      var f = i ? -50 : 70;
+      b.style.translate = (x * f).toFixed(1) + 'px ' + (y * f).toFixed(1) + 'px';
+    });
+  });
+
+  /* Botões magnéticos: puxam um pouco na direção do cursor */
+  document.querySelectorAll('.btn').forEach(function (b) {
+    b.addEventListener('pointermove', function (e) {
+      var r = b.getBoundingClientRect();
+      b.classList.add('magnetico');
+      b.style.setProperty('--bx', ((e.clientX - r.left - r.width / 2) * .25).toFixed(1) + 'px');
+      b.style.setProperty('--by', ((e.clientY - r.top - r.height / 2) * .35).toFixed(1) + 'px');
+    });
+    b.addEventListener('pointerleave', function () {
+      b.classList.remove('magnetico');
+      b.style.setProperty('--bx', '0px'); b.style.setProperty('--by', '0px');
+    });
+  });
+
+  /* Cartões inclinam em 3D conforme o mouse */
+  document.querySelectorAll('.cartao, .depo').forEach(function (c) {
+    c.addEventListener('pointermove', function (e) {
+      if (c.classList.contains('reveal')) return;
+      var r = c.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      c.style.transition = 'transform .15s linear, box-shadow .35s';
+      c.style.transform = 'perspective(800px) rotateX(' + (-y * 8).toFixed(2) + 'deg) rotateY(' + (x * 10).toFixed(2) + 'deg) translateY(-4px)';
+    });
+    c.addEventListener('pointerleave', function () {
+      c.style.transition = ''; c.style.transform = '';
+    });
+  });
+
+  /* Luz que segue o mouse nos tratamentos */
+  document.querySelectorAll('.grade-trat li').forEach(function (li) {
+    li.addEventListener('pointermove', function (e) {
+      var r = li.getBoundingClientRect();
+      li.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      li.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+})();
+
+/* Dúvidas: abre e fecha deslizando */
+document.querySelectorAll('.faq details').forEach(function (d) {
+  var s = d.querySelector('summary'), p = d.querySelector('p');
+  if (semMovimento || !p.animate) return;
+  var anim = null;
+  s.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (anim) anim.cancel();
+    if (d.open) {
+      anim = p.animate([{ height: p.offsetHeight + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      anim.onfinish = function () { d.open = false; anim = null; };
+    } else {
+      d.open = true;
+      var h = p.offsetHeight;
+      anim = p.animate([{ height: '0px', opacity: 0, transform: 'translateY(-6px)' }, { height: h + 'px', opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      anim.onfinish = function () { anim = null; };
+    }
+  });
+});
+
+/* Mapa 3D da localização (carrega só quando a seção chega perto da tela) */
+(function () {
+  var el = document.getElementById('mapa3d');
+  if (!el) return;
+  var LOCAL = [-49.2115551, -16.6165685]; /* longitude, latitude da clínica */
+  var LINK = 'https://maps.app.goo.gl/bdhJuEMEWFKmsDwJ7';
+
+  function googleEmbed() {
+    el.outerHTML = '<iframe title="Mapa com a localização da Sorria Guanabara" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=-16.6165685,-49.2115551&z=17&output=embed"></iframe>';
+    var selo = document.querySelector('.mapa-selo'); if (selo) selo.remove();
+  }
+  function temWebGL() {
+    try { var c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
+  }
+  function carregar(src, tipo) {
+    return new Promise(function (ok, erro) {
+      var t = document.createElement(tipo === 'css' ? 'link' : 'script');
+      if (tipo === 'css') { t.rel = 'stylesheet'; t.href = src; } else { t.src = src; }
+      t.onload = ok; t.onerror = erro; document.head.appendChild(t);
+    });
+  }
+  function iniciar() {
+    if (!temWebGL()) return googleEmbed();
+    Promise.all([
+      carregar('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css', 'css'),
+      carregar('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js')
+    ]).then(function () {
+      var mapa = new maplibregl.Map({
+        container: el,
+        style: 'https://tiles.openfreemap.org/styles/liberty',
+        center: LOCAL, zoom: 17.2, pitch: 62, bearing: -25,
+        maxPitch: 75, minZoom: 12,
+        cooperativeGestures: true,
+        attributionControl: { compact: true }
+      });
+      mapa.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+      mapa.on('error', function () {});
+
+      var m = document.createElement('a');
+      m.className = 'marcador'; m.href = LINK; m.target = '_blank'; m.rel = 'noopener';
+      m.setAttribute('aria-label', 'Abrir a Sorria Guanabara no Google Maps');
+      m.innerHTML = '<span class="rotulo">Sorria Guanabara</span><span class="onda"><span class="logo"><img src="assets/logo.jpg" alt=""></span></span><i></i>';
+      new maplibregl.Marker({ element: m, anchor: 'bottom' }).setLngLat(LOCAL).addTo(mapa);
+
+      /* Câmera gira devagar ao redor da clínica até a pessoa mexer no mapa */
+      if (semMovimento) return;
+      var girando = true;
+      function parar() { girando = false; }
+      ['mousedown', 'touchstart', 'wheel', 'dragstart'].forEach(function (ev) { mapa.on(ev, parar); });
+      mapa.on('load', function () {
+        mapa.easeTo({ zoom: 17.6, pitch: 65, bearing: 20, duration: 3500 });
+        setTimeout(function giro() {
+          if (!girando) return;
+          mapa.easeTo({ bearing: mapa.getBearing() + 40, duration: 9000, easing: function (t) { return t; } });
+          mapa.once('moveend', giro);
+        }, 3600);
+      });
+    }).catch(googleEmbed);
+  }
+  if (!('IntersectionObserver' in window)) return iniciar();
+  var io = new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting) { io.disconnect(); iniciar(); }
+  }, { rootMargin: '400px 0px' });
+  io.observe(el);
+})();
+
 /* Comparador antes e depois */
 document.querySelectorAll('.ba').forEach(function (ba) {
   var range = ba.querySelector('input');
@@ -574,7 +868,7 @@ document.querySelectorAll('.ba').forEach(function (ba) {
 
   ba.addEventListener('pointerdown', function (e) {
     arrastando = true; mexeu = true;
-    ba.classList.add('arrastando');
+    ba.classList.add('arrastando', 'mexido');
     try { ba.setPointerCapture(e.pointerId); } catch (err) {}
     peloPonteiro(e);
   });
