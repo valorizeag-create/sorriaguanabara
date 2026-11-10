@@ -8,15 +8,16 @@
 <meta property="og:title" content="Sorria Guanabara · Odontologia no Jardim Guanabara">
 <meta property="og:description" content="Atendimento para toda a família, plano de tratamento explicado e agendamento pelo WhatsApp.">
 <!-- Capa do link ao compartilhar (WhatsApp, Instagram, Facebook). Precisa ser endereço completo. -->
+<link rel="canonical" href="https://www.sorriaguanabara.com/">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://sorriaguanabara.vercel.app/">
+<meta property="og:url" content="https://www.sorriaguanabara.com/">
 <meta property="og:site_name" content="Sorria Guanabara">
-<meta property="og:image" content="https://sorriaguanabara.vercel.app/assets/compartilhar.png">
+<meta property="og:image" content="https://www.sorriaguanabara.com/assets/compartilhar.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Sorriso vermelho da Sorria Guanabara sobre fundo branco">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://sorriaguanabara.vercel.app/assets/compartilhar.png">
+<meta name="twitter:image" content="https://www.sorriaguanabara.com/assets/compartilhar.png">
 <link rel="icon" href="assets/logo.jpg">
 <link rel="apple-touch-icon" href="assets/logo.jpg">
 <meta property="og:locale" content="pt_BR">
@@ -898,18 +899,20 @@ document.querySelectorAll('.faq details').forEach(function (d) {
   function temWebGL() {
     try { var c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
   }
-  function carregar(src, tipo) {
+  /* integridade: o navegador só usa o arquivo se ele for exatamente o esperado */
+  function carregar(src, tipo, integridade) {
     return new Promise(function (ok, erro) {
       var t = document.createElement(tipo === 'css' ? 'link' : 'script');
       if (tipo === 'css') { t.rel = 'stylesheet'; t.href = src; } else { t.src = src; }
+      if (integridade) { t.integrity = integridade; t.crossOrigin = 'anonymous'; }
       t.onload = ok; t.onerror = erro; document.head.appendChild(t);
     });
   }
   function iniciar() {
     if (!temWebGL()) return googleEmbed();
     Promise.all([
-      carregar('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css', 'css'),
-      carregar('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js')
+      carregar('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css', 'css', 'sha384-MinO0mNliZ3vwppuPOUnGa+iq619pfMhLVUXfC4LHwSCvF9H+6P/KO4Q7qBOYV5V'),
+      carregar('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js', 'js', 'sha384-SYKAG6cglRMN0RVvhNeBY0r3FYKNOJtznwA0v7B5Vp9tr31xAHsZC0DqkQ/pZDmj')
     ]).then(function () {
       var mapa = new maplibregl.Map({
         container: el,
